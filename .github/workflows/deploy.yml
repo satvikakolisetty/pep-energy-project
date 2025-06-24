@@ -65,10 +65,10 @@ jobs:
           mv deploy.zip src/lambda_api/deploy.zip
 
       #Run Terraform to deploy the infrastructure and new code.
-      # The init command will now read the backend.tf file and
-      # configure itself to use the S3 remote state.
+      # This init will also connect to the remote S3 state,
+      # so it knows exactly what to destroy. The -input=false flag
       - name: Terraform Deploy
         working-directory: ./terraform
         run: |
-          terraform init
+          terraform init -input=false
           terraform apply -auto-approve
