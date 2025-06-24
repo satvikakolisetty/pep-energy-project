@@ -41,6 +41,7 @@ class SystemSummary(BaseModel):
     total_records: int = Field(..., description="Total number of records in the database.")
     total_anomalies: int = Field(..., description="Total number of anomalous records detected.")
     total_sites: int = Field(..., description="Total number of unique sites.")
+    all_site_ids: List[str] = Field(..., description="A list of all unique site IDs found in the data.")
     site_anomaly_distribution: Dict[str, int] = Field(..., description="A dictionary showing the count of anomalies for each site.")
 
 
@@ -74,8 +75,6 @@ def get_system_summary():
         # A scan operation reads every item in the entire table.
         response = table.scan()
         items = response.get('Items', [])
-
-        # Continue scanning if the table is larger than the 1MB response limit.
         while 'LastEvaluatedKey' in response:
             response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
             items.extend(response.get('Items', []))
@@ -86,11 +85,13 @@ def get_system_summary():
                 "total_records": 0,
                 "total_anomalies": 0,
                 "total_sites": 0,
+                "all_site_ids": [],
                 "site_anomaly_distribution": {}
             }
 
         anomalies = [item for item in items if item.get('anomaly')]
         site_ids = [item['site_id'] for item in items]
+        unique_site_ids = list(set(site_ids))
         
         # Use Counter for an efficient way to count anomalies per site.
         anomaly_counts = Counter(item['site_id'] for item in anomalies)
@@ -99,6 +100,7 @@ def get_system_summary():
             "total_records": total_records,
             "total_anomalies": len(anomalies),
             "total_sites": len(set(site_ids)),
+            "all_site_ids": unique_site_ids,
             "site_anomaly_distribution": dict(anomaly_counts)
         }
     except Exception as e:
