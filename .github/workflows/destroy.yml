@@ -1,0 +1,34 @@
+name: Destroy PEP Data Pipeline from AWS
+# This workflow needs to be triggered manually from Github Actions.
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the code from your repository.
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Terraform.
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.8.5
+
+      # Step 3: Configure AWS credentials using the secrets.
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 4: Run Terraform destroy.
+      # It will use the configuration from your .tf files to know what to destroy.
+      - name: Terraform Destroy
+        working-directory: ./terraform
+        run: |
+          terraform init
+          terraform destroy -auto-approve
