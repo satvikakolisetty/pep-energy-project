@@ -11,14 +11,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # It restores the exact same state file that the 
-      # deploy workflow saved, so Terraform knows what to destroy.
-      - name: Cache Terraform state
-        uses: actions/cache@v3
-        with:
-          path: terraform/terraform.tfstate
-          # Use the same key as the deploy workflow to find the correct cache.
-          key: terraform-state-main
 
       # Step 2: Set up Terraform.
       - name: Setup Terraform
@@ -35,9 +27,10 @@ jobs:
           aws-region: us-east-1
 
       # Step 4: Run Terraform destroy.
-      # It will use the configuration from your .tf files to know what to destroy.
+      # This init will also connect to the remote S3 state,
+      # so it knows exactly what to destroy.
       - name: Terraform Destroy
         working-directory: ./terraform
         run: |
-          terraform init
+          terraform init -input=false
           terraform destroy -auto-approve
