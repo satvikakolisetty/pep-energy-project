@@ -32,32 +32,38 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 # Or your chosen region
+          aws-region: us-east-1
 
       # Package each Lambda function with its dependencies.
       # For each function, we go into its directory,
       # install its requirements into a 'package' folder, and then zip
       # both the code and the libraries together.
 
-      - name: Package Lambda Functions
+      - name: Create Deployment Packages
         run: |
+          mkdir -p deploy_packages
           # Package lambda_data_simulation
-          pip install -r src/lambda_data_simulation/requirements.txt -t src/lambda_data_simulation/package
           cd src/lambda_data_simulation
-          zip -r deploy.zip .
+          pip install -r requirements.txt -t .
+          zip -r ../../deploy_packages/lambda_data_simulation.zip .
           cd ../..
 
           # Package lambda_data_processing
-          pip install -r src/lambda_data_processing/requirements.txt -t src/lambda_data_processing/package
           cd src/lambda_data_processing
-          zip -r deploy.zip .
+          pip install -r requirements.txt -t .
+          zip -r ../../deploy_packages/lambda_data_processing.zip .
           cd ../..
 
           # Package lambda_api
-          pip install -r src/lambda_api/requirements.txt -t src/lambda_api/package
           cd src/lambda_api
-          zip -r deploy.zip .
+          pip install -r requirements.txt -t .
+          zip -r ../../deploy_packages/lambda_api.zip .
           cd ../..
+      - name: Update Terraform file paths
+        run: |
+          sed -i 's|../src/lambda_data_simulation/deploy.zip|../deploy_packages/lambda_data_simulation.zip|g' terraform/main.tf
+          sed -i 's|../src/lambda_data_processing/deploy.zip|../deploy_packages/lambda_data_processing.zip|g' terraform/main.tf
+          sed -i 's|../src/lambda_api/deploy.zip|../deploy_packages/lambda_api.zip|g' terraform/main.tf
 
       #Run Terraform to deploy the infrastructure and new code.
       - name: Terraform Deploy
@@ -65,12 +71,3 @@ jobs:
         run: |
           terraform init
           terraform apply -auto-approve
-      # Upload the deployment packages as artifacts just for testing purpose.
-      - name: Upload Lambda Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: lambda-packages
-          path: |
-            src/lambda_data_simulation/deploy.zip
-            src/lambda_data_processing/deploy.zip
-            src/lambda_api/deploy.zip
