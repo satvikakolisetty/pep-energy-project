@@ -8,7 +8,7 @@ provider "aws" {
 # S3 bucket for storing raw incoming JSON data files.
 resource "aws_s3_bucket" "data_bucket" {
   bucket = "${var.project_name}-raw-data-bucket-${random_id.bucket_id.hex}"
-
+  force_destroy = true
   tags = {
     Project = var.project_name
   }
