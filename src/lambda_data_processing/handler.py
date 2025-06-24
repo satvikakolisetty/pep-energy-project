@@ -24,7 +24,12 @@ def process_s3_file_handler(event, context):
     # of this process fails, we log the error, and the Lambda invocation will fail.
     # This failure will then be routed to our SQS Dead-Letter Queue.
     try:
-        # Get the bucket and key (filename) from the S3 event.
+
+        # to test DLQ
+
+        raise ValueError("Intentional failure to test the Dead-Letter Queue.")
+
+        # Get the bucket and filename from the S3 event.
         s3_event_record = event['Records'][0]['s3']
         bucket_name = s3_event_record['bucket']['name']
         # The key can have special characters, so we unquote it.
