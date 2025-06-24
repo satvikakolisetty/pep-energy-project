@@ -13,6 +13,16 @@ jobs:
       #Check out the code from your repository.
       - name: Checkout repository
         uses: actions/checkout@v3
+        
+      # This action restores the Terraform state file from the cache, if it exists.
+      - name: Cache Terraform state
+        uses: actions/cache@v3
+        with:
+          # This is the path to the state file within the runner
+          path: terraform/terraform.tfstate
+          # This is the unique key to find the cache. We tie it to the branch name.
+          key: terraform-state-${{ github.ref_name }}
+
 
       #Set up Python, we'll need for packaging.
       - name: Set up Python
