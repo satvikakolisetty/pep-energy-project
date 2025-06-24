@@ -12,6 +12,9 @@ DYNAMODB_TABLE_NAME = os.environ['DYNAMODB_TABLE_NAME']
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(DYNAMODB_TABLE_NAME)
 
+# This new environment variable will be set by Terraform.
+API_STAGE_NAME = os.environ.get('API_STAGE_NAME', '')
+
 # Pydantic Models for Data Validation
 # This model defines the structure of the data we'll return.
 # FastAPI uses this for response validation.
@@ -49,7 +52,8 @@ class SystemSummary(BaseModel):
 app = FastAPI(
     title="Private Energy Partners Data API",
     description="API for querying and summarizing energy production and consumption data.",
-    version="1.0.0"
+    version="1.0.0",
+    root_path=f"/{API_STAGE_NAME}"
 )
 
 @app.get("/")
