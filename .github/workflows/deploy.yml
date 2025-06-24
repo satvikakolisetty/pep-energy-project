@@ -65,3 +65,12 @@ jobs:
         run: |
           terraform init
           terraform apply -auto-approve
+      # Upload the deployment packages as artifacts just for testing purpose.
+      - name: Upload Lambda Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: lambda-packages
+          path: |
+            src/lambda_data_simulation/deploy.zip
+            src/lambda_data_processing/deploy.zip
+            src/lambda_api/deploy.zip
