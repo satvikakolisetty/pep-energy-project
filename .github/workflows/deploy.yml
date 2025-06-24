@@ -13,16 +13,6 @@ jobs:
       #Check out the code from your repository.
       - name: Checkout repository
         uses: actions/checkout@v3
-        
-      # This action restores the Terraform state file from the cache, if it exists.
-      - name: Cache Terraform state
-        uses: actions/cache@v3
-        with:
-          # This is the path to the state file within the runner
-          path: terraform/terraform.tfstate
-          # This is the unique key to find the cache. We tie it to the branch name.
-          key: terraform-state-${{ github.ref_name }}
-
 
       #Set up Python, we'll need for packaging.
       - name: Set up Python
@@ -52,30 +42,31 @@ jobs:
       - name: Create Deployment Packages
         run: |
           mkdir -p deploy_packages
+
           # Package lambda_data_simulation
           cd src/lambda_data_simulation
           pip install -r requirements.txt -t .
-          zip -r ../../deploy_packages/lambda_data_simulation.zip .
+          zip -r ../../deploy.zip .
           cd ../..
+          mv deploy.zip src/lambda_data_simulation/deploy.zip
 
           # Package lambda_data_processing
           cd src/lambda_data_processing
           pip install -r requirements.txt -t .
-          zip -r ../../deploy_packages/lambda_data_processing.zip .
+          zip -r ../../deploy.zip .
           cd ../..
+          mv deploy.zip src/lambda_data_processing/deploy.zip
 
           # Package lambda_api
           cd src/lambda_api
           pip install -r requirements.txt -t .
-          zip -r ../../deploy_packages/lambda_api.zip .
+          zip -r ../../deploy.zip .
           cd ../..
-      - name: Update Terraform file paths
-        run: |
-          sed -i 's|../src/lambda_data_simulation/deploy.zip|../deploy_packages/lambda_data_simulation.zip|g' terraform/main.tf
-          sed -i 's|../src/lambda_data_processing/deploy.zip|../deploy_packages/lambda_data_processing.zip|g' terraform/main.tf
-          sed -i 's|../src/lambda_api/deploy.zip|../deploy_packages/lambda_api.zip|g' terraform/main.tf
+          mv deploy.zip src/lambda_api/deploy.zip
 
       #Run Terraform to deploy the infrastructure and new code.
+      # The init command will now read the backend.tf file and
+      # configure itself to use the S3 remote state.
       - name: Terraform Deploy
         working-directory: ./terraform
         run: |
