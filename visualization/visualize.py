@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import os
 
-API_BASE_URL = "https://nikwq8nzg3.execute-api.us-east-1.amazonaws.com/prod" 
+API_BASE_URL = "https://i0r1b4cobe.execute-api.us-east-1.amazonaws.com/prod" 
 
 # Set plotly to open visualizations in your default browser.
 pio.renderers.default = "browser"
