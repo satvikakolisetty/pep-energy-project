@@ -170,7 +170,7 @@ resource "aws_lambda_function" "api_lambda" {
     variables = {
       DYNAMODB_TABLE_NAME = aws_dynamodb_table.energy_data_table.name
       # Pass the stage name to the Lambda so FastAPI knows its root path.
-      API_STAGE_NAME      = aws_api_gateway_stage.api_stage.stage_name
+      API_STAGE_NAME      = "prod"
     }
   }
   tags = {
