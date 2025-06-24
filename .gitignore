@@ -6,7 +6,7 @@
 # .tfstate files
 *.tfstate
 *.tfstate.*.backup
-
+.DS_Store
 # Crash log files
 crash.log
 crash.*.log
