@@ -5,8 +5,7 @@ import plotly.io as pio
 
 # IMPORTANT: Replace this with the actual API endpoint URL you get from your
 # Terraform output after deployment.
-API_BASE_URL = "https://0fg9nd1fdi.execute-api.us-east-1.amazonaws.com/prod" 
-
+API_BASE_URL = "https://aigbzcfh87.execute-api.us-east-1.amazonaws.com/prod" 
 
 # Set plotly to open charts in your default browser.
 pio.renderers.default = "browser"
