@@ -164,6 +164,7 @@ resource "aws_lambda_function" "api_lambda" {
   role             = aws_iam_role.api_lambda_role.arn
   handler          = "handler.handler"
   runtime          = "python3.9"
+  timeout          = 30
   source_code_hash = filebase64sha256("../src/lambda_api/deploy.zip")
   environment {
     variables = {

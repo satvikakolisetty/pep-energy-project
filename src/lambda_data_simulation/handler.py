@@ -37,9 +37,11 @@ def generate_data_handler(event, context):
         
         # Start with the current time and step backwards for each record.
         timestamp = datetime.datetime.utcnow()
-        # Introducing a 10% chance of generating an anomalous record for testing purpose.
-        is_anomaly = random.random() < 0.1
+        
         for i in range(num_records_for_site):
+
+            # Introducing a 10% chance of generating an anomalous record for testing purpose.
+            is_anomaly = random.random() < 0.1
         
             if is_anomaly:
                 if random.choice([True, False]):

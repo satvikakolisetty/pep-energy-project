@@ -5,7 +5,8 @@ import plotly.io as pio
 
 # IMPORTANT: Replace this with the actual API endpoint URL you get from your
 # Terraform output after deployment.
-API_BASE_URL = "YOUR_API_GATEWAY_URL_HERE" 
+API_BASE_URL = "https://0fg9nd1fdi.execute-api.us-east-1.amazonaws.com/prod" 
+
 
 # Set plotly to open charts in your default browser.
 pio.renderers.default = "browser"
@@ -89,9 +90,6 @@ def plot_energy_trends(site_id, records):
 
 
 def main():
-    if "YOUR_API_GATEWAY_URL_HERE" in API_BASE_URL:
-        print("Error: Please update the API_BASE_URL in the script with your actual API Gateway URL.")
-        return
 
     # 1. Fetch summary data and plot anomaly distribution.
     print("\n--- Fetching System Summary ---")
