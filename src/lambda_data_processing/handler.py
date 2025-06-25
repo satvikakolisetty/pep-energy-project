@@ -27,7 +27,7 @@ def process_s3_file_handler(event, context):
 
         # to test DLQ
 
-        raise ValueError("Intentional failure to test the Dead-Letter Queue.")
+        #raise ValueError("Intentional failure to test the Dead-Letter Queue.")
 
         # Get the bucket and filename from the S3 event.
         s3_event_record = event['Records'][0]['s3']
