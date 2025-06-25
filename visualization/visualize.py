@@ -5,7 +5,7 @@ import plotly.io as pio
 import os
 from pathlib import Path
 
-API_BASE_URL = "https://57j0d2biqk.execute-api.us-east-1.amazonaws.com/prod" 
+API_BASE_URL = "https://93xd2s2oef.execute-api.us-east-1.amazonaws.com/prod" 
 
 # Set plotly to open visualizations in your default browser.
 pio.renderers.default = "browser"
@@ -49,7 +49,7 @@ def plot_anomaly_distribution(summary_data):
         yaxis_title='Number of Anomalies',
         template='plotly_white'
     )
-    fig.write_html("CHART_DIR/1_anomaly_distribution.html")
+    fig.write_html(CHART_DIR / "1_anomaly_distribution.html")
     print("Saved anomaly distribution chart to CHART_DIR/1_anomaly_distribution.html")
 
 
@@ -69,7 +69,7 @@ def plot_energy_trends(site_id, records):
     
     fig.update_layout(title_text=f'Energy Trends for {site_id}', xaxis_title='Timestamp', yaxis_title='Energy (kWh)', template='plotly_white')
     
-    file_name = f"CHART_DIR/2_energy_trends_{site_id}.html"
+    file_name = CHART_DIR / f"2_energy_trends_{site_id}.html"
     fig.write_html(file_name)
     print(f"Saved energy trends chart to {file_name}")
 
@@ -79,7 +79,7 @@ def plot_net_energy_comparison(all_data):
     
     fig = go.Figure(data=[go.Bar(x=net_energy_by_site.index, y=net_energy_by_site.values, marker_color='royalblue')])
     fig.update_layout(title_text='Net Energy Generation (Profitability) by Site', xaxis_title='Site ID', yaxis_title='Total Net Energy (kWh)', template='plotly_white')
-    fig.write_html("CHART_DIR/3_net_energy_comparison.html")
+    fig.write_html(CHART_DIR / "3_net_energy_comparison.html")
     print("Saved net energy comparison chart to CHART_DIR/3_net_energy_comparison.html")
 
 def plot_site_efficiency(all_data):
@@ -95,7 +95,7 @@ def plot_site_efficiency(all_data):
 
     fig = go.Figure(data=[go.Bar(x=site_agg['site_id'], y=site_agg['efficiency'], marker_color='purple')])
     fig.update_layout(title_text='Site Efficiency (Energy Retained)', xaxis_title='Site ID', yaxis_title='Efficiency Score (%)', template='plotly_white')
-    fig.write_html("CHART_DIR/4_site_efficiency.html")
+    fig.write_html(CHART_DIR / "4_site_efficiency.html")
     print("Saved site efficiency chart to CHART_DIR/4_site_efficiency.html")
 
 def main():
